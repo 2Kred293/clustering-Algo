@@ -1,0 +1,177 @@
+# K-means Algorithm
+import random
+import math
+import matplotlib.pyplot as plt
+#from matplotlib import style
+#style.use('ggplot')
+import numpy as np
+
+
+#Euclidian Distance between two d-dimensional points
+def eucldist(p0,p1):
+    dist = 0.0
+    for i in range(0,len(p0)):
+        dist += (p0[i] - p1[i])**2
+    return math.sqrt(dist)
+
+
+    
+#K-Means Algorithm
+def kmeans(k,datapoints):
+
+    # d - Dimensionality of Datapoints
+    d = len(datapoints[0]) 
+    
+    #Limit our iterations
+    Max_Iterations = 1000
+    i = 0
+    
+    cluster = [0] * len(datapoints)
+    prev_cluster = [-1] * len(datapoints)
+    
+    #Randomly Choose Centers for the Clusters
+    cluster_centers = []
+    for i in range(0,k):
+        new_cluster = []
+        #for i in range(0,d):
+        #    new_cluster += [random.randint(0,10)]
+        cluster_centers += [random.choice(datapoints)]
+        
+       
+    
+    while (cluster != prev_cluster) or (i > Max_Iterations) or (force_recalculation) :
+        
+        prev_cluster = list(cluster)
+        force_recalculation = False
+        i += 1
+    
+        #Update Point's Cluster Alligiance
+        for p in range(0,len(datapoints)):
+            min_dist = float("inf")
+            
+            #Check min_distance against all centers
+            for c in range(0,len(cluster_centers)):
+                
+                dist = eucldist(datapoints[p],cluster_centers[c])
+                
+                if (dist < min_dist):
+                    min_dist = dist  
+                    cluster[p] = c   # Reassign Point to new Cluster
+        
+        
+        #Update Cluster's Position
+        for k in range(0,len(cluster_centers)):
+            new_center = [0] * d
+            members = 0
+            for p in range(0,len(datapoints)):
+                if (cluster[p] == k): #If this point belongs to the cluster
+                    for j in range(0,d):
+                        new_center[j] += datapoints[p][j]
+                    members += 1
+            
+            for j in range(0,d):
+                if members != 0:
+                    new_center[j] = new_center[j] / float(members) 
+                
+                #This means that our initial random assignment was poorly chosen
+                #Change it to a new datapoint to actually force k clusters
+                else: 
+                    new_center = random.choice(datapoints)
+                    force_recalculation = True
+                    print ("Forced Recalculation...")
+                    
+            
+            cluster_centers[k] = new_center
+    
+        
+    print( "======== Results ========")
+    print ("Clusters", cluster_centers)
+    print ("Iterations",i)
+    print ("Assignments", cluster)
+ 
+    
+  
+if __name__ == "__main__":
+ 
+    datapoints = ([65.780000, 112.990000],
+                    [71.520000, 136.490000],
+                    [69.400000, 153.030000],
+                    [68.220000, 142.340000],
+                    [67.790000, 144.300000],
+                    [68.700000, 123.300000],
+                    [69.800000, 141.490000],
+                    [70.010000, 136.460000],
+                    [67.900000, 112.370000],
+                    [66.780000, 120.670000],
+                    [66.490000, 127.450000],
+                    [67.620000, 114.140000],
+                    [68.300000, 125.610000],
+                    [67.120000, 122.460000],
+                    [68.280000, 116.090000],
+                    [71.090000, 140.000000],
+                    [66.460000, 129.500000],
+                    [68.650000, 142.970000],
+                    [71.230000, 137.900000],
+                    [67.130000, 124.040000],
+                    [67.830000, 141.280000],
+                    [68.880000, 143.540000],
+                    [63.480000, 97.900000],
+                    [68.420000, 129.500000],
+                    [67.630000, 141.850000],
+                    [67.210000, 129.720000],
+                    [70.840000, 142.420000],
+                    [67.490000, 131.550000],
+                    [66.530000, 108.330000],
+                    [65.440000, 113.890000],
+                    [69.520000, 103.300000],
+                    [65.810000, 120.750000],
+                    [67.820000, 125.790000],
+                    [70.600000, 136.220000],
+                    [71.800000, 140.100000],
+                    [69.210000, 128.750000],
+                    [66.800000, 141.800000],
+                    [67.660000, 121.230000],
+                    [67.810000, 131.350000],
+                    [64.050000, 106.710000],
+                    [68.570000, 124.360000],
+                    [65.180000, 124.860000],
+                    [69.660000, 139.670000],
+                    [67.970000, 137.370000],
+                    [65.980000, 106.450000],
+                    [68.670000, 128.760000],
+                    [66.880000, 145.680000],
+                    [67.700000, 116.820000],
+                    [69.820000, 143.620000],
+                    [69.090000, 134.930000])
+
+    k = 11    #Number of Clusters
+      
+    kmeans(k,datapoints) 
+
+
+
+
+OUTPUT:
+
+
+Forced Recalculation...
+======== Results ========
+Clusters [[68.95142857142858,
+	 143.43142857142854],
+	  [67.62, 141.8175],
+	  [67.246, 119.112],
+	   [66.1857142857143,
+	    110.69714285714288],
+	     [66.5, 100.6],
+	      [70.33000000000001, 137.68222222222224], 
+	      [69.4, 153.03], 
+	      [67.24249999999999, 130.53], 
+	      [67.34, 123.804],
+	       [67.53666666666666, 126.28333333333335],
+	        [68.76666666666667, 129.00333333333333]]
+	        
+Iterations=14
+
+Assignments [3, 5, 6, 1, 0, 8, 0, 5, 3, 2, 9, 3, 9, 8, 2, 5, 7, 0, 5, 8, 1, 0, 4, 10, 1, 7, 0, 7, 3, 3, 4, 2, 9, 5, 5, 10, 1, 2, 7, 3, 8, 8, 5, 5, 3, 10, 0, 2, 0, 5]
+
+

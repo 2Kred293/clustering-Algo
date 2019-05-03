@@ -1,0 +1,149 @@
+#Mean-Shift Algorithm
+import matplotlib.pyplot as plt
+#from matplotlib import style
+#style.use('ggplot')
+import numpy as np
+
+X = np.array([[65.780000, 112.990000],
+[71.520000, 136.490000],
+[69.400000, 153.030000],
+[68.220000, 142.340000],
+[67.790000, 144.300000],
+[68.700000, 123.300000],
+[69.800000, 141.490000],
+[70.010000, 136.460000],
+[67.900000, 112.370000],
+[66.780000, 120.670000],
+[66.490000, 127.450000],
+[67.620000, 114.140000],
+[68.300000, 125.610000],
+[67.120000, 122.460000],
+[68.280000, 116.090000],
+[71.090000, 140.000000],
+[66.460000, 129.500000],
+[68.650000, 142.970000],
+[71.230000, 137.900000],
+[67.130000, 124.040000],
+[67.830000, 141.280000],
+[68.880000, 143.540000],
+[63.480000, 97.900000],
+[68.420000, 129.500000],
+[67.630000, 141.850000],
+[67.210000, 129.720000],
+[70.840000, 142.420000],
+[67.490000, 131.550000],
+[66.530000, 108.330000],
+[65.440000, 113.890000],
+[69.520000, 103.300000],
+[65.810000, 120.750000],
+[67.820000, 125.790000],
+[70.600000, 136.220000],
+[71.800000, 140.100000],
+[69.210000, 128.750000],
+[66.800000, 141.800000],
+[67.660000, 121.230000],
+[67.810000, 131.350000],
+[64.050000, 106.710000],
+[68.570000, 124.360000],
+[65.180000, 124.860000],
+[69.660000, 139.670000],
+[67.970000, 137.370000],
+[65.980000, 106.450000],
+[68.670000, 128.760000],
+[66.880000, 145.680000],
+[67.700000, 116.820000],
+[69.820000, 143.620000],
+[69.090000, 134.930000]])
+
+plt.scatter(X[:,0], X[:,1], s=30)
+plt.show()
+
+colors = 10*["g","r","c","b","k"]
+
+class Mean_Shift:
+    def __init__(self, radius=4):
+        self.radius = radius
+
+    def fit(self, data):
+        centroids = {}
+
+        for i in range(len(data)):
+            centroids[i] = data[i]
+        
+        while True:
+            new_centroids = []
+            for i in centroids:
+                in_bandwidth = []
+                centroid = centroids[i]
+                for featureset in data:
+                    if np.linalg.norm(featureset-centroid) < self.radius:
+                        in_bandwidth.append(featureset)
+
+                new_centroid = np.average(in_bandwidth,axis=0)
+                new_centroids.append(tuple(new_centroid))
+
+            uniques = sorted(list(set(new_centroids)))
+
+            prev_centroids = dict(centroids)
+
+            centroids = {}
+            for i in range(len(uniques)):
+                centroids[i] = np.array(uniques[i])
+
+            optimized = True
+
+            for i in centroids:
+                if not np.array_equal(centroids[i], prev_centroids[i]):
+                    optimized = False
+                if not optimized:
+                    break
+                
+            if optimized:
+                break
+
+        self.centroids = centroids
+
+
+
+clf = Mean_Shift()
+clf.fit(X)
+
+centroids = clf.centroids
+
+plt.scatter(X[:,0], X[:,1],s=30)
+
+for c in centroids:
+    plt.scatter(centroids[c][0], centroids[c][1], color='g', marker='*', s=150)
+
+plt.show()
+print("cluster centers are\n",centroids)
+print("no of centroids are",len(centroids.keys()))
+
+
+
+
+
+
+
+
+OUTPUT:
+
+
+
+cluster centers are
+ {0: array([63.48, 97.9 ]),
+  1: array([ 65.52, 107.16333333]),
+   2: array([ 67.12      , 114.38333333]),
+    3: array([ 67.23272727, 123.68363636]),
+     4: array([ 67.307, 123.307]),
+      5: array([ 67.68      , 126.80333333]),
+       6: array([ 67.788, 128.798]),
+        7: array([ 69.13923077, 141.95230769]),
+         8: array([ 69.4 , 153.03]),
+          9: array([ 69.52, 103.3 ]),
+           10: array([ 70.277, 138.063])}
+           
+no of clusters are 11
+
+
+# We can consider that , according to our objective the required categories can be formed by comparing teh weight and height of all students to categorise
